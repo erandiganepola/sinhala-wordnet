@@ -1,0 +1,118 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sinhala.wordnet</groupId>
+        <artifactId>wordnet</artifactId>
+        <relativePath>../pom.xml</relativePath>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>extjwnl-utilities</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>extJWNL Utilities</name>
+    <description>Utilities for extJWNL library</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.sf.extjwnl</groupId>
+            <artifactId>extjwnl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.sinhala.wordnet</groupId>
+            <artifactId>wordnet-dal</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <outputDirectory>target/classes</outputDirectory>
+        <directory>target</directory>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>appassembler-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>appassembler</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>assemble</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- set alternative assemble directory -->
+                                    <assembleDirectory>${project.build.directory}/dist</assembleDirectory>
+                                    <!-- Extra JVM arguments that will be included in the bin scripts -->
+                                    <extraJvmArguments>-Xmx512M</extraJvmArguments>
+                                    <includeConfigurationDirectoryInClasspath>false
+                                    </includeConfigurationDirectoryInClasspath>
+                                    <repositoryLayout>flat</repositoryLayout>
+                                    <repositoryName>lib</repositoryName>
+                                    <programs>
+                                        <program>
+                                            <mainClass>net.sf.extjwnl.utilities.DictionaryToDatabase</mainClass>
+                                            <name>dict2db</name>
+                                        </program>
+                                        <program>
+                                            <mainClass>net.sf.extjwnl.utilities.DictionaryToMap</mainClass>
+                                            <name>dict2map</name>
+                                        </program>
+                                        <program>
+                                            <mainClass>net.sf.extjwnl.utilities.Examples</mainClass>
+                                            <name>examples</name>
+                                        </program>
+                                        <program>
+                                            <mainClass>net.sf.extjwnl.cli.ewn</mainClass>
+                                            <name>ewn</name>
+                                        </program>
+                                    </programs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>all</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+
+                                <configuration>
+                                    <finalName>extjwnl-${project.version}</finalName>
+                                    <appendAssemblyId>false</appendAssemblyId>
+                                    <attach>false</attach>
+                                    <descriptors>
+                                        <descriptor>src/main/assembly/extjwnl-utilities.xml</descriptor>
+                                    </descriptors>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
